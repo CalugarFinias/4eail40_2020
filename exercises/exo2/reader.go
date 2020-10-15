@@ -7,15 +7,24 @@ import (
 )
 
 type spaceEraser struct {
-	r io.Reader
+	re io.Reader
 }
 
 func main() {
-	s := strings.NewReader("H e l l o w o r l d!")
-	r := spaceEraser{s}
+	s := strings.NewReader(" S a l u t l e s a m i s !") // creation of Reader , read a string, creation object
+	r := spaceEraser{s}                                  // create us Space Eraser who take a member of reader type
 	io.Copy(os.Stdout, &r)
 }
 
-// Implement a type that satisfies the io.Reader interface and reads from another io.Reader,
-// modifying the stream by removing the spaces.
-// Expected output: "Helloworld!"
+func (r spaceEraser) Read(p []byte) (int, error) { // the int for the number  of readed charcaters
+	//the error is returned when we arrived at the end of file
+	n, err := r.re.Read(p)
+	j := 0
+	for i := 0; i < n; i++ {
+		if p[i] != 32 { // if ellement of buffer different of space
+			p[j] = p[i] // if not a space i copy the caracter in my byte array
+			j++         // counter for the non space caracters
+		}
+	}
+	return j, err // i return the number of space caracters and err
+}
